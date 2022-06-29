@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.UserMapper">
+    <select id="selectById" resultType="User">
+        select * from user where id = #{id};
+    </select>
+
+    <select id="selectByName" resultType="User">
+        select * from user where username = #{uername};
+    </select>
+
+    <select id="selectByEmail" resultType="User">
+        select * from user where email = #{email};
+    </select>
+
+    <insert id="insert" keyProperty="id" keyColumn="id">
+        insert into user(username, password, salt, email, type, status, activation_code, header_url, create_time)
+        VALUES (#{username}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode}, #{headerUrl}, #{createTime})
+    </insert>
+</mapper>
