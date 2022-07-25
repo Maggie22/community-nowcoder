@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.CommentMapper">
+    <select id="selectCommentByEntity" resultType="Comment">
+        select * from comment
+        where entity_type=#{entityType} and entity_id=#{entityId}
+        <if test="offset >= 0 and limit >= 0">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="selectCountByEntity" resultType="int">
+        select count(*) from comment
+        where entity_type=#{entityType} and entity_id=#{entityId}
+    </select>
+
+    <insert id="insertComment" keyColumn="id" keyProperty="id">
+        insert into comment(user_id, entity_type, entity_id, target_id, content, status, create_time)
+        values (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime});
+    </insert>
+</mapper>

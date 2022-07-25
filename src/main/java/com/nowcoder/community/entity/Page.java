@@ -20,14 +20,15 @@ public class Page {
 
     private String path = "/index";
 
-    public void setTotalPage() {
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public Integer getTotalPage(){
         if(totalRows % limit == 0)
             totalPage = totalRows / limit;
         else
             totalPage = totalRows / limit + 1;
-    }
-
-    public Integer getTotalPage(){
         return totalPage;
     }
 
