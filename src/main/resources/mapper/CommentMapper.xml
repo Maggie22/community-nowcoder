@@ -11,6 +11,20 @@
         </if>
     </select>
 
+    <select id="selectCommentList" resultType="Comment">
+        select * from comment
+        where entity_type=#{entityType} and user_id=#{userId}
+        order by create_time desc
+        <if test="offset >= 0 and limit >= 0">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="selectCountByUser" resultType="int">
+        select count(*) from comment
+        where entity_type=#{entityType} and user_id=#{userId}
+    </select>
+
     <select id="selectCountByEntity" resultType="int">
         select count(*) from comment
         where entity_type=#{entityType} and entity_id=#{entityId}

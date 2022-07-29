@@ -1,4 +1,7 @@
 const CONTEXT_PATH = "/community";
+const TYPE_POST = 1;
+const TYPE_COMMENT = 2;
+const TYPE_USER = 3;
 
 window.alert = function(message) {
 	if(!$(".alert-box").length) {

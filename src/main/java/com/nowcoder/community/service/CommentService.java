@@ -18,16 +18,24 @@ import java.util.List;
 public class CommentService {
 
     @Autowired
-    CommentMapper commentMapper;
+    private CommentMapper commentMapper;
 
     @Autowired
-    DiscussPostService discussPostService;
+    private DiscussPostService discussPostService;
 
     @Autowired
-    SensitiveFilter sensitiveFilter;
+    private SensitiveFilter sensitiveFilter;
 
     public List<Comment> selectCommentByEntity(int entityType, int entityId, int offset, int limit){
         return commentMapper.selectCommentByEntity(entityType, entityId, offset, limit);
+    }
+
+    public List<Comment> selectCommentListForPost(int userId, int offset, int limit){
+        return commentMapper.selectCommentList(userId, CommunityConstant.COMMENT_TYPE_POST, offset, limit);
+    }
+
+    public int selectCountForPostByUser(int userId){
+        return commentMapper.selectCountByUser(CommunityConstant.COMMENT_TYPE_POST, userId);
     }
 
     public int selectCount(int entityType, int entityId){

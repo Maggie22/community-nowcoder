@@ -6,12 +6,15 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.CommentService;
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtils;
 import com.nowcoder.community.utils.HostHolder;
+import com.nowcoder.community.utils.RedisUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +26,19 @@ import java.util.*;
 public class DiscussPostController {
 
     @Autowired
-    DiscussPostService discussPostService;
+    private DiscussPostService discussPostService;
 
     @Autowired
-    CommentService commentService;
+    private CommentService commentService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    HostHolder hostHolder;
+    private LikeService likeService;
+
+    @Autowired
+    private HostHolder hostHolder;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
@@ -65,6 +71,9 @@ public class DiscussPostController {
         model.addAttribute("post", post);
         model.addAttribute("user", user);
 
+        long likeCountPost = likeService.getTotalLike(CommunityConstant.TYPE_POST, post.getId());
+        model.addAttribute("likeCount", likeCountPost);
+
         // 处理评论
         List<Map<String, Object>> commentVOList = new ArrayList<>();
         // 读帖子的所有评论
@@ -78,7 +87,8 @@ public class DiscussPostController {
                 map.put("comment", comment);
                 map.put("user", userService.findUserById(comment.getUserId()));
                 map.put("replyCount", commentService.selectCount(CommunityConstant.COMMENT_TYPE_COMMENT, comment.getId()));
-
+                long likeCountComment = likeService.getTotalLike(CommunityConstant.TYPE_COMMENT, comment.getId());
+                map.put("likeCount", likeCountComment);
                 // 处理评论的回复
                 List<Comment> replyList = commentService.selectCommentByEntity(CommunityConstant.COMMENT_TYPE_COMMENT, comment.getId(), -1, 0);
                 List<Map<String, Object>> replyVOList = new ArrayList<>();
@@ -89,6 +99,8 @@ public class DiscussPostController {
                         replyMap.put("user", userService.findUserById(reply.getUserId()));
                         User target = reply.getTargetId()==null ? null : userService.findUserById(reply.getTargetId());
                         replyMap.put("target", target);
+                        long likeCountReply = likeService.getTotalLike(CommunityConstant.TYPE_COMMENT, reply.getId());
+                        replyMap.put("likeCount", likeCountReply);
                         replyVOList.add(replyMap);
                     }
                 }
@@ -100,5 +112,24 @@ public class DiscussPostController {
 
         model.addAttribute("commentList", commentVOList);
         return "/site/discuss-detail";
+    }
+
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    @ResponseBody
+    public String setLikeStatus(int entityType, int entityId, int targetUserId){
+        String key = RedisUtils.getLikeKey(entityType, entityId);
+        int userId = hostHolder.getUser().getId();
+        likeService.setLikeStatus(userId, entityType, entityId, targetUserId);
+
+        // 状态
+        int likeStatus = likeService.getUserLikeStatus(userId, entityType, entityId);
+        // 点赞统计
+        long likeCount = likeService.getTotalLike(entityType, entityId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("likeStatus", likeStatus);
+        map.put("likeCount", likeCount);
+
+        return CommunityUtils.getJSONString(0, "成功", map);
     }
 }

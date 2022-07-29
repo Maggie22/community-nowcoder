@@ -26,6 +26,11 @@ public class DiscussPostService {
         return discussPostsMapper.selectDiscussPosts(userId, offset, limit);
     }
 
+    /**
+     * 返回帖子数量
+     * @param userId
+     * @return
+     */
     public int findDiscussPostRows(Integer userId){
         return discussPostsMapper.selectDiscussPostRows(userId);
     }

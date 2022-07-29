@@ -20,10 +20,10 @@ import java.util.Date;
 public class CommentController {
 
     @Autowired
-    HostHolder hostHolder;
+    private HostHolder hostHolder;
 
     @Autowired
-    CommentService commentService;
+    private CommentService commentService;
 
 
     @RequestMapping(value = "/add/{discussPostId}", method = RequestMethod.POST)

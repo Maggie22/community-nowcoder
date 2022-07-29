@@ -2,6 +2,11 @@ package com.nowcoder.community.utils;
 
 public interface CommunityConstant {
 
+    // 实体类型
+    int TYPE_POST = 1;
+    int TYPE_COMMENT = 2;
+    int TYPE_USER = 3;
+
     // 激活状态
     int ACTIVATE_SUCCESS = 0;
     int ACTIVATE_REPEAT = 1;
@@ -39,4 +44,9 @@ public interface CommunityConstant {
     int MESSAGE_UNREAD = 0;
     int MESSAGE_READ = 1;
     int MESSAGE_DELETE = 2;
+
+    // 点赞状态
+    int LIKE_COMMON = 0;
+    int LIKE_LIKED = 1;
+    int LIKE_UNLIKE = 2;
 }

@@ -124,7 +124,7 @@
 				<ul class="list-unstyled">
 					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:each="message:${messages}">
 						<span class="badge badge-danger" th:if="${message.unreadCount > 0}" th:text="${message.unreadCount}">会话未读消息数量</span>
-						<a href="profile.html">
+						<a th:href="@{|/user/profile/${message.otherUser.id}|}">
 							<img th:src="${message.otherUser.headerUrl}" class="mr-4 rounded-circle user-header" alt="用户头像" >
 						</a>
 						<div class="media-body">

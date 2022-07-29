@@ -34,7 +34,7 @@ function send_letter() {
 function delete_msg(obj) {
 	// TODO 删除数据
 	// $(obj).parents(".media").remove();
-	console.log($(obj).val());
+	// console.log($(obj).val());
 	$.post(
 		CONTEXT_PATH + "/letter/delete",
 		{"id": $(obj).val()},
