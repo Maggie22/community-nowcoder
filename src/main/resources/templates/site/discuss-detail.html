@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/css/global.css}"/>
 	<link rel="stylesheet" th:href="@{/css/discuss-detail.css}" />
-	<title>牛客网-帖子详情</title>
+	<title th:text="|${post.title} - 牛客网|"></title>
 </head>
 <body>
 	<div class="nk-container">
@@ -84,8 +84,8 @@
 							发布于 <b th:text="${#dates.format(post.createTime, 'yyyy-MM-dd HH:mm:ss')}">时间</b>
 							<ul class="d-inline float-right">
 								<li class="d-inline ml-2">
-									<a href="javascript:" th:onclick="|like(this, TYPE_POST, ${post.id}, ${post.userId})|" class="text-primary">
-										<b>赞</b> <i th:text="${likeCount}">0</i>
+									<a href="javascript:" th:onclick="|like(this, TYPE_POST, ${post.id}, ${post.userId}, ${post.id})|" class="text-primary">
+										<b th:text="${likeStatus == 0}?'赞':'已赞'">赞</b> <i th:text="${likeCount}">0</i>
 									</a>
 								</li>
 								<li class="d-inline ml-2">|</li>
@@ -134,7 +134,7 @@
 								<span>发布于 <b th:text="${#dates.format(comment.comment.createTime, 'yyyy-MM-dd HH:mm:ss')}">评论发表时间</b></span>
 								<ul class="d-inline float-right">
 									<li class="d-inline ml-2">
-										<a href="javascript:" th:onclick="|like(this, TYPE_COMMENT, ${comment.comment.id}, ${post.userId})|" class="text-primary">
+										<a href="javascript:" th:onclick="|like(this, TYPE_COMMENT, ${comment.comment.id}, ${post.userId}, ${post.id})|" class="text-primary">
 											<b>赞</b> <i th:text="${comment.likeCount}">0</i>
 										</a>
 									</li>
@@ -164,7 +164,7 @@
 										<span th:text="${#dates.format(reply.comment.createTime, 'yyyy-MM-dd HH:mm:ss')}">回复时间</span>
 										<ul class="d-inline float-right">
 											<li class="d-inline ml-2">
-												<a href="javascript:" th:onclick="|like(this, TYPE_COMMENT, ${reply.comment.id}, ${post.userId})|" class="text-primary">
+												<a href="javascript:" th:onclick="|like(this, TYPE_COMMENT, ${reply.comment.id}, ${post.userId}, ${post.id})|" class="text-primary">
 													<b>赞</b> <i th:text="${reply.likeCount}">0</i>
 												</a>
 											</li>
@@ -178,6 +178,8 @@
 													<input type="hidden" name="entityType" value="2"/>
 													<input type="hidden" name="entityId" th:value="${comment.comment.id}"/>
 													<input type="hidden" name="targetId" th:value="${reply.user.id}"/>
+													<input type="hidden" name="targetUserId" th:value="${reply.user.id}"/>
+													<input type="hidden" name="discussPostId" th:value="${post.id}"/>
 												</div>
 												<div class="text-right mt-2">
 													<button type="submit" class="btn btn-primary btn-sm">&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
@@ -194,6 +196,8 @@
 												<input type="text" class="input-size" name="content" placeholder="请输入你的观点"/>
 												<input type="hidden" name="entityType" value="2"/>
 												<input type="hidden" name="entityId" th:value="${comment.comment.id}"/>
+												<input type="hidden" name="targetUserId" th:value="${comment.user.id}">
+												<input type="hidden" name="discussPostId" th:value="${post.id}"/>
 										</div>
 										<div class="text-right mt-2">
 											<button type="submit" class="btn btn-primary btn-sm">&nbsp;&nbsp;回&nbsp;&nbsp;复&nbsp;&nbsp;</button>
@@ -224,6 +228,8 @@
 						<textarea name="content" placeholder="在这里畅所欲言你的看法吧!"></textarea>
 						<input type="hidden" name="entityType" value="1"/>
 						<input type="hidden" name="entityId" th:value="${post.id}"/>
+						<input type="hidden" name="targetUserId" th:value="${post.userId}">
+						<input type="hidden" name="discussPostId" th:value="${post.id}"/>
 					</p>
 					<p class="text-right">
 						<button type="submit" class="btn btn-primary btn-sm">&nbsp;&nbsp;回&nbsp;&nbsp;帖&nbsp;&nbsp;</button>

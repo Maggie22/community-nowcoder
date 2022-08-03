@@ -60,4 +60,7 @@ public class CommentService {
         return rowNums;
     }
 
+    public Comment selectCommentById(int id){
+        return commentMapper.selectCommentById(id);
+    }
 }

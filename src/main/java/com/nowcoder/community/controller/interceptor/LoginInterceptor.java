@@ -2,6 +2,7 @@ package com.nowcoder.community.controller.interceptor;
 
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CookieUtils;
@@ -20,6 +21,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    MessageService messageService;
 
     @Autowired
     HostHolder hostHolder;
@@ -47,6 +51,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 获取User
         User user = hostHolder.getUser();
         if(user!=null && modelAndView!=null){
+            int unreadCount = messageService.getUnreadNoticeCount(user.getId(), null);
+            unreadCount += messageService.getCountUnreadMessage(null, user.getId());
+            user.setUnreadCount(unreadCount);
             modelAndView.addObject("headerUser", user);
         }
     }

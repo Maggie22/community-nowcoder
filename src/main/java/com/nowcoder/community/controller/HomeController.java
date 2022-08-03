@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.service.LikeService;
+import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class HomeController {
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    MessageService messageService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page){

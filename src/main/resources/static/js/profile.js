@@ -1,9 +1,9 @@
-function follow(btn, targetUserId) {
+function follow(btn, entityType, entityId) {
 	if($(btn).hasClass("btn-info")) {
 		// 关注TA
 		$.post(
 			CONTEXT_PATH + "/follow",
-			{"targetUserId": targetUserId},
+			{"entityType": entityType, "entityId": entityId},
 			function (data) {
 				data = $.parseJSON(data);
 				$("#hintBody").text(data.msg);
@@ -25,7 +25,7 @@ function follow(btn, targetUserId) {
 		// 取消关注
 		$.post(
 			CONTEXT_PATH + "/unfollow",
-			{"targetUserId": targetUserId},
+			{"entityType": entityType, "entityId": entityId},
 			function (data) {
 				data = $.parseJSON(data);
 				$("#hintBody").text(data.msg);

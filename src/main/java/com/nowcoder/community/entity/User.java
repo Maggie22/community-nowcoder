@@ -13,6 +13,7 @@ public class User {
     private String activationCode;
     private String headerUrl;
     private Date createTime;
+    private Integer unreadCount;
 
     public Integer getId() {
         return id;
@@ -92,6 +93,14 @@ public class User {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(Integer unreadCount) {
+        this.unreadCount = unreadCount;
     }
 
     @Override

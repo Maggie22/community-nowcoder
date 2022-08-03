@@ -1,9 +1,7 @@
 package com.nowcoder.community.controller;
 
-import com.nowcoder.community.entity.Comment;
-import com.nowcoder.community.entity.DiscussPost;
-import com.nowcoder.community.entity.Page;
-import com.nowcoder.community.entity.User;
+import com.nowcoder.community.entity.*;
+import com.nowcoder.community.event.EventProducer;
 import com.nowcoder.community.service.CommentService;
 import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.service.LikeService;
@@ -40,6 +38,9 @@ public class DiscussPostController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content){
@@ -73,6 +74,7 @@ public class DiscussPostController {
 
         long likeCountPost = likeService.getTotalLike(CommunityConstant.TYPE_POST, post.getId());
         model.addAttribute("likeCount", likeCountPost);
+        model.addAttribute("likeStatus", likeService.getUserLikeStatus(CommunityConstant.TYPE_POST, CommunityConstant.TYPE_POST, post.getId()));
 
         // 处理评论
         List<Map<String, Object>> commentVOList = new ArrayList<>();
@@ -116,7 +118,7 @@ public class DiscussPostController {
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
     @ResponseBody
-    public String setLikeStatus(int entityType, int entityId, int targetUserId){
+    public String setLikeStatus(int entityType, int entityId, int targetUserId, int discussPostId){
         String key = RedisUtils.getLikeKey(entityType, entityId);
         int userId = hostHolder.getUser().getId();
         likeService.setLikeStatus(userId, entityType, entityId, targetUserId);
@@ -129,6 +131,27 @@ public class DiscussPostController {
         Map<String, Object> map = new HashMap<>();
         map.put("likeStatus", likeStatus);
         map.put("likeCount", likeCount);
+
+        // 发送通知
+        if(userId != targetUserId) {
+            Event event = new Event()
+                    .setTopic(CommunityConstant.NOTICE_TYPE_LIKE)
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setUserId(userId)
+                    .setData("postId", discussPostId);
+
+            if (entityType == CommunityConstant.TYPE_POST) {
+                DiscussPost discussPost = discussPostService.findDiscussPostById(discussPostId);
+                event.setTargetUserId(discussPost.getUserId());
+            } else if (entityType == CommunityConstant.TYPE_COMMENT) {
+                Comment comment = commentService.selectCommentById(entityId);
+                event.setTargetUserId(comment.getUserId());
+            }
+
+            eventProducer.sendMessage(event);
+        }
+
 
         return CommunityUtils.getJSONString(0, "成功", map);
     }

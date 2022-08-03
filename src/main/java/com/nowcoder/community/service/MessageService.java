@@ -62,4 +62,20 @@ public class MessageService {
     public int deleteMessage(int id){
         return messageMapper.deleteMessageById(id);
     }
+
+    public Message getLatestNotice(int userId, String topic){
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    public List<Message> getNoticeList(int userId, String topic, int offset, int limit){
+        return messageMapper.selectNoticeList(userId, topic, offset, limit);
+    }
+
+    public int getUnreadNoticeCount(int userId, String topic){
+        return messageMapper.selectUnreadNoticeCount(userId, topic);
+    }
+
+    public int getNoticeCount(int userId, String topic){
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
 }

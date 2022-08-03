@@ -25,6 +25,11 @@
         where entity_type=#{entityType} and user_id=#{userId}
     </select>
 
+    <select id="selectCommentById" resultType="Comment">
+        select * from comment
+        where id=#{id}
+    </select>
+
     <select id="selectCountByEntity" resultType="int">
         select count(*) from comment
         where entity_type=#{entityType} and entity_id=#{entityId}

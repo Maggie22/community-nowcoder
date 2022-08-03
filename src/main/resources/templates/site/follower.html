@@ -89,7 +89,7 @@
 								<button type="button"
 										th:if="${!follower.isSelf}"
 										th:class="|btn ${follower.isFollower?'btn-secondary':'btn-info'} btn-sm float-right mr-5 follow-btn|"
-										th:onclick="|follow(this, ${follower.user.id});|"
+										th:onclick="|follow(this, TYPE_USER, ${follower.user.id});|"
 										th:text="${follower.isFollower?'已关注':'关注TA'}"
 								>关注TA</button>
 							</div>

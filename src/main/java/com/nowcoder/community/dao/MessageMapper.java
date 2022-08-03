@@ -54,4 +54,32 @@ public interface MessageMapper {
     int updateUnreadMessages(@Param("idList") List<Integer> idList, @Param("userId") int userId);
 
     int deleteMessageById(int id);
+
+    /**
+     * 查询未读通知数量，当topic为null时，查询所有类型的通知数量
+     * @param userId
+     * @return
+     */
+    int selectUnreadNoticeCount(@Param("userId") int userId, @Param("topic") String topic);
+
+    /**
+     * 查询最新通知
+     * @param userId
+     * @param topic
+     * @return
+     */
+    Message selectLatestNotice(@Param("userId") int userId, @Param("topic") String topic);
+
+
+    /**
+     * 分页查询通知
+     */
+    List<Message> selectNoticeList(@Param("userId") int userId, @Param("topic") String topic,
+                                   @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 查询通知总数
+     */
+    int selectNoticeCount(@Param("userId") int userId, @Param("topic") String topic);
+
 }

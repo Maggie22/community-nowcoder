@@ -1,7 +1,6 @@
 package com.nowcoder.community.utils;
 
 public interface CommunityConstant {
-
     // 实体类型
     int TYPE_POST = 1;
     int TYPE_COMMENT = 2;
@@ -49,4 +48,12 @@ public interface CommunityConstant {
     int LIKE_COMMON = 0;
     int LIKE_LIKED = 1;
     int LIKE_UNLIKE = 2;
+
+    // 系统通知类型
+    String NOTICE_TYPE_COMMENT = "comment";
+    String NOTICE_TYPE_LIKE = "like";
+    String NOTICE_TYPE_FOLLOW = "follow";
+
+    // 其他
+    int ADMIN_ID = 1;
 }

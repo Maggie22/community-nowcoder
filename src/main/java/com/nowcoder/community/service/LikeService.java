@@ -49,9 +49,9 @@ public class LikeService {
         String key = RedisUtils.getLikeKey(entityType, entityId);
         Boolean isMember = redisTemplate.opsForSet().isMember(key, userId);
         if(isMember)
-            return CommunityConstant.LIKE_COMMON;
-        else
             return CommunityConstant.LIKE_LIKED;
+        else
+            return CommunityConstant.LIKE_COMMON;
     }
 
     public int getUserTotalLike(int userId){

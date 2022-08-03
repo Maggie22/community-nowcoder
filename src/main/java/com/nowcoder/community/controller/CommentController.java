@@ -1,8 +1,13 @@
 package com.nowcoder.community.controller;
 
 import com.nowcoder.community.entity.Comment;
+import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.Event;
+import com.nowcoder.community.event.EventProducer;
 import com.nowcoder.community.service.CommentService;
+import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.utils.CommunityConstant;
+import com.nowcoder.community.utils.CommunityUtils;
 import com.nowcoder.community.utils.HostHolder;
 import com.nowcoder.community.utils.SensitiveFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -25,9 +30,14 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
+    private EventProducer eventProducer;
 
     @RequestMapping(value = "/add/{discussPostId}", method = RequestMethod.POST)
-    public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment, Model model){
+    public String addComment(@PathVariable("discussPostId") int discussPostId, int targetUserId, Comment comment, Model model){
         if(StringUtils.isBlank(comment.getContent())){
             model.addAttribute("commentMsg", "回复内容不能为空！");
             return "redirect:/discuss/detail/" + discussPostId;
@@ -41,8 +51,20 @@ public class CommentController {
         comment.setUserId(hostHolder.getUser().getId());
 
         // 插入评论
-        int numRows = commentService.insertComment(comment);
-        // 更新评论数量
+        commentService.insertComment(comment);
+
+        // 发送通知
+        if(targetUserId != hostHolder.getUser().getId()){
+            // 不是本人时才发送通知
+            Event event = new Event()
+                    .setTopic(CommunityConstant.NOTICE_TYPE_COMMENT)
+                    .setEntityType(comment.getEntityType())
+                    .setEntityId(comment.getEntityId())
+                    .setUserId(comment.getUserId())
+                    .setData("postId", discussPostId)
+                    .setTargetUserId(targetUserId);
+            eventProducer.sendMessage(event);
+        }
 
         return "redirect:/discuss/detail/" + discussPostId;
     }
