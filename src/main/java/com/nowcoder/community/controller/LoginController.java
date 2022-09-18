@@ -4,6 +4,7 @@ import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtils;
+import com.nowcoder.community.utils.HostHolder;
 import com.nowcoder.community.utils.RedisUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,8 +44,13 @@ public class LoginController {
     @Autowired
     private Producer kaptchaProducer;
 
+    @Autowired
+    private HostHolder hostHolder;
+
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String getLoginPage(){
+        if(hostHolder.getUser()!=null)
+            return "redirect:/index";
         return "/site/login";
     }
 

@@ -62,6 +62,15 @@ public class DiscussPostController {
         post.setType(CommunityConstant.POST_TYPE_COMMON);
         discussPostService.addDiscussPost(post);
 
+        Event event = new Event()
+                .setTopic(CommunityConstant.NOTICE_TYPE_POST)
+                .setEntityType(CommunityConstant.TYPE_POST)
+                .setEntityId(post.getId())
+                .setUserId(post.getUserId())
+                .setData("messageType", "insert");
+
+        eventProducer.sendMessage(event);
+
         return CommunityUtils.getJSONString(0, "发布成功！");
     }
 
@@ -154,5 +163,59 @@ public class DiscussPostController {
 
 
         return CommunityUtils.getJSONString(0, "成功", map);
+    }
+
+    @RequestMapping(value = "/setTop", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTopType(int postId){
+
+        discussPostService.updateType(postId, CommunityConstant.POST_TYPE_TOP);
+
+        Event event = new Event()
+                .setTopic(CommunityConstant.NOTICE_TYPE_POST)
+                .setEntityType(CommunityConstant.TYPE_POST)
+                .setEntityId(postId)
+                .setUserId(hostHolder.getUser().getId())
+                .setData("messageType", "update");
+
+        eventProducer.sendMessage(event);
+
+        return CommunityUtils.getJSONString(200, "置顶成功！");
+    }
+
+    @RequestMapping(value = "/setRecommend", method = RequestMethod.POST)
+    @ResponseBody
+    public String setRecommendStatus(int postId){
+
+        discussPostService.updateType(postId, CommunityConstant.POST_STATUS_RECOMMEND);
+
+        Event event = new Event()
+                .setTopic(CommunityConstant.NOTICE_TYPE_POST)
+                .setEntityType(CommunityConstant.TYPE_POST)
+                .setEntityId(postId)
+                .setUserId(hostHolder.getUser().getId())
+                .setData("messageType", "insert");
+
+        eventProducer.sendMessage(event);
+
+        return CommunityUtils.getJSONString(200, "加精成功！");
+    }
+
+    @RequestMapping(value = "/setInvalidate", method = RequestMethod.POST)
+    @ResponseBody
+    public String setInvalidateStatus(int postId){
+
+        discussPostService.updateType(postId, CommunityConstant.POST_STATUS_INVALIDATE);
+
+        Event event = new Event()
+                .setTopic(CommunityConstant.NOTICE_TYPE_POST)
+                .setEntityType(CommunityConstant.TYPE_POST)
+                .setEntityId(postId)
+                .setUserId(hostHolder.getUser().getId())
+                .setData("messageType", "delete");
+
+        eventProducer.sendMessage(event);
+
+        return CommunityUtils.getJSONString(200, "删除成功！");
     }
 }

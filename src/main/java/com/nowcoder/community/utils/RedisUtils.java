@@ -10,6 +10,8 @@ public class RedisUtils {
     private static final String KAPTCHA_PREFIX = "community:kaptcha";
     private static final String LOGINTICKET_PREFIX = "community:loginticket";
     private static final String USER_PREFIX = "community:user";
+    private static final String UV_PREFIX = "community:uv";
+    private static final String DAU_PREFIX = "community:dau";
 
     public static String getLikeKey(int entityType, int entityId){
         return LIKE_ENTITY_PREFIX + SPLIT + entityType + SPLIT + entityId;
@@ -41,5 +43,21 @@ public class RedisUtils {
 
     public static String getUserKey(int userId){
         return USER_PREFIX + SPLIT + userId;
+    }
+
+    public static String getUVKey(String date){
+        return UV_PREFIX + SPLIT + date;
+    }
+
+    public static String getUVKey(String startKey, String endDate){
+        return UV_PREFIX + SPLIT + startKey + SPLIT + endDate;
+    }
+
+    public static String getDAUKey(String date){
+        return DAU_PREFIX + SPLIT + date;
+    }
+
+    public static String getDAUKey(String startKey, String endKey){
+        return DAU_PREFIX + SPLIT + startKey + SPLIT + endKey;
     }
 }

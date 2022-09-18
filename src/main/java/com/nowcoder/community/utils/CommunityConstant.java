@@ -13,10 +13,15 @@ public interface CommunityConstant {
 
     // 用户状态与类型
     int COMMON = 0;
-    int MANAGER = 1;
+    int ADMIN = 1;
     int MODERATOR = 2;
     int INACTIVATED = 0;
     int ACTIVATED = 1;
+
+    // 用户权限
+    String AUTHORITY_USER= "USER";
+    String AUTHORITY_ADMIN = "ADMIN";
+    String AUTHORITY_MODERATOR = "MODERATOR";
 
     // 登录状态与超时
     int LOGIN = 0;
@@ -53,6 +58,7 @@ public interface CommunityConstant {
     String NOTICE_TYPE_COMMENT = "comment";
     String NOTICE_TYPE_LIKE = "like";
     String NOTICE_TYPE_FOLLOW = "follow";
+    String NOTICE_TYPE_POST = "discusspost";
 
     // 其他
     int ADMIN_ID = 1;

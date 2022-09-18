@@ -37,12 +37,12 @@ public class CommentController {
     private EventProducer eventProducer;
 
     @RequestMapping(value = "/add/{discussPostId}", method = RequestMethod.POST)
-    public String addComment(@PathVariable("discussPostId") int discussPostId, int targetUserId, Comment comment, Model model){
-        if(StringUtils.isBlank(comment.getContent())){
+    public String addComment(@PathVariable("discussPostId") int discussPostId, int targetUserId, Comment comment, Model model) {
+        if (StringUtils.isBlank(comment.getContent())) {
             model.addAttribute("commentMsg", "回复内容不能为空！");
             return "redirect:/discuss/detail/" + discussPostId;
         }
-        if (hostHolder.getUser() == null){
+        if (hostHolder.getUser() == null) {
             return "redirect:/login";
         }
         // 补充信息
@@ -54,7 +54,7 @@ public class CommentController {
         commentService.insertComment(comment);
 
         // 发送通知
-        if(targetUserId != hostHolder.getUser().getId()){
+        if (targetUserId != hostHolder.getUser().getId()) {
             // 不是本人时才发送通知
             Event event = new Event()
                     .setTopic(CommunityConstant.NOTICE_TYPE_COMMENT)
@@ -63,6 +63,18 @@ public class CommentController {
                     .setUserId(comment.getUserId())
                     .setData("postId", discussPostId)
                     .setTargetUserId(targetUserId);
+            eventProducer.sendMessage(event);
+        }
+
+
+        if (comment.getEntityType() == CommunityConstant.TYPE_POST) {
+            // 修改es数据库中帖子的评论数量
+            Event event = new Event()
+                    .setTopic(CommunityConstant.NOTICE_TYPE_POST)
+                    .setEntityType(comment.getEntityType())
+                    .setEntityId(comment.getEntityId())
+                    .setUserId(comment.getUserId())
+                    .setData("messageType", "insert");
             eventProducer.sendMessage(event);
         }
 

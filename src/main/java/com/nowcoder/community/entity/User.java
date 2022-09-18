@@ -1,5 +1,7 @@
 package com.nowcoder.community.entity;
 
+import com.nowcoder.community.utils.CommunityConstant;
+
 import java.util.Date;
 
 public class User {
@@ -102,7 +104,6 @@ public class User {
     public void setUnreadCount(Integer unreadCount) {
         this.unreadCount = unreadCount;
     }
-
     @Override
     public String toString() {
         return "User{" +

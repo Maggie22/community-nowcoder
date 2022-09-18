@@ -1,17 +1,31 @@
 package com.nowcoder.community.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.*;
+
 import java.util.Date;
 
+@Setting(shards = 6,replicas = 3)
+@Document(indexName = "discusspost")
 public class DiscussPost {
-    private Integer id;
-    private Integer userId;
+    @Id
+    private int id;
+    @Field(type = FieldType.Integer)
+    private int userId;
+    @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String title;
+    @Field(type = FieldType.Text,analyzer = "ik_max_word",searchAnalyzer = "ik_smart")
     private String content;
-    private Integer type;
-    private Integer status;
+    @Field(type = FieldType.Integer)
+    private int type;
+    @Field(type = FieldType.Integer)
+    private int status;
+    @Field(type = FieldType.Date, format = DateFormat.basic_date)
     private Date createTime;
-    private Integer commentCount;
-    private Double score;
+    @Field(type = FieldType.Integer)
+    private int commentCount;
+    @Field(type = FieldType.Double)
+    private double score;
 
     public Integer getId() {
         return id;

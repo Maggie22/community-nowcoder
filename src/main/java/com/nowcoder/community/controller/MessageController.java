@@ -152,8 +152,8 @@ public class MessageController {
         Message followNotice = messageService.getLatestNotice(userId, CommunityConstant.NOTICE_TYPE_FOLLOW);
 
         // 处理评论
-        Map<String, Object> messageVO = new HashMap<>();
         if(commentNotice!=null){
+            Map<String, Object> messageVO = new HashMap<>();
             String content = HtmlUtils.htmlUnescape(commentNotice.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
             User user = userService.findUserById((int) data.get("userId"));
@@ -169,8 +169,8 @@ public class MessageController {
         }
 
         // 处理点赞
-        messageVO = new HashMap<>();
         if(likeNotice!=null){
+            Map<String, Object> messageVO = new HashMap<>();
             String content = HtmlUtils.htmlUnescape(likeNotice.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
             User user = userService.findUserById((int) data.get("userId"));
@@ -185,8 +185,8 @@ public class MessageController {
             model.addAttribute("likeNotice", messageVO);
         }
 
-        messageVO = new HashMap<>();
         if(followNotice!=null){
+            Map<String, Object> messageVO = new HashMap<>();
             String content = HtmlUtils.htmlUnescape(followNotice.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
             User user = userService.findUserById((int) data.get("userId"));

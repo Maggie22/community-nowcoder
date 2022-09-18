@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -68,9 +70,10 @@
 					<img src="http://static.nowcoder.com/images/img/icons/ico-discuss.png"/>
 					<span th:utext="${post.title}">文章标题</span>
 					<div class="float-right">
-						<button type="button" class="btn btn-danger btn-sm">置顶</button>
-						<button type="button" class="btn btn-danger btn-sm">加精</button>
-						<button type="button" class="btn btn-danger btn-sm">删除</button>
+						<input type="hidden" th:value="${post.id}" id="postId">
+						<button type="button" class="btn btn-danger btn-sm" id="topBtn" th:disabled="${post.status == 1}" sec:authorize="hasAnyAuthority('MODERATOR', 'ADMIN')">置顶</button>
+						<button type="button" class="btn btn-danger btn-sm" id="recommendBtn" th:disabled="${post.type == 1}" sec:authorize="hasAnyAuthority('MODERATOR', 'ADMIN')">加精</button>
+						<button type="button" class="btn btn-danger btn-sm" id="deleteBtn" th:disabled="${post.type == 2}" sec:authorize="hasAnyAuthority('MODERATOR')">删除</button>
 					</div>
 				</h6>
 				<!-- 作者 -->
@@ -304,6 +307,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<script th:src="@{/js/global.js}"></script>
-	<script th:src="@{/js/like.js}"></script>
+	<script th:src="@{/js/discusspost.js}"></script>
 </body>
 </html>

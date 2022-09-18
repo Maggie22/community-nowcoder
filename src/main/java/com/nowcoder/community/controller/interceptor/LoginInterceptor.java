@@ -8,6 +8,10 @@ import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CookieUtils;
 import com.nowcoder.community.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -40,6 +44,11 @@ public class LoginInterceptor implements HandlerInterceptor {
                 User user = userService.findUserById(loginTicket.getUserId());
                 if(user != null){
                     hostHolder.setUsers(user);
+                    // 用户存入SecurityContext，便于认证
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            user, user.getPassword(), userService.getAuthorities(user.getId())
+                    );
+                    SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
                 }
             }
         }
@@ -61,5 +70,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         hostHolder.clear();
+        SecurityContextHolder.clearContext();
     }
 }

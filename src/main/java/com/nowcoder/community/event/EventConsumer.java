@@ -1,8 +1,11 @@
 package com.nowcoder.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Event;
 import com.nowcoder.community.entity.Message;
+import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.ElasticSearchService;
 import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.utils.CommunityConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,6 +28,12 @@ public class EventConsumer {
 
     @Autowired
     MessageService messageService;
+
+    @Autowired
+    DiscussPostService postService;
+
+    @Autowired
+    ElasticSearchService searchService;
 
     private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
 
@@ -59,5 +68,32 @@ public class EventConsumer {
 
         message.setContent(JSONObject.toJSONString(content));
         messageService.addMessage(message);
+    }
+
+    @KafkaListener(topics = {"discusspost"})
+    public void handlePostMessage(ConsumerRecord record){
+        if(record == null || record.value() == null){
+            logger.error("消息内容为空");
+            return;
+        }
+
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if(event == null){
+            logger.error("消息内容为空");
+            return;
+        }
+        Map<String, Object> data = event.getData();
+        if(data.isEmpty()){
+            logger.error("data内容为空");
+            return;
+        }
+        String messageType = (String) data.get("messageType");
+        if("insert".equals(messageType)) {
+            DiscussPost post = postService.findDiscussPostById(event.getEntityId());
+            searchService.insertDiscussPost(post);
+        }
+        else if ("delete".equals(messageType)){
+            searchService.deleteDiscussPost(event.getEntityId());
+        }
     }
 }

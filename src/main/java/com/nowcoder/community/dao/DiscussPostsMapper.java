@@ -3,6 +3,7 @@ package com.nowcoder.community.dao;
 import com.nowcoder.community.entity.DiscussPost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -18,4 +19,10 @@ public interface DiscussPostsMapper {
     DiscussPost selectDiscussPostById(Integer postId);
 
     int updateCommentCount(@Param("id") int id, @Param("commentCount") int commentCount);
+
+    int updatePostStatus(@Param("id") int id, @Param("status") int status);
+
+    int updatePostType(@Param("id") int id, @Param("type") int type);
+
+    int selectUserIdByPostId(int id);
 }
